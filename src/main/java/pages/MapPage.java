@@ -3,10 +3,13 @@ package pages;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import context.Context;
 
@@ -44,6 +47,7 @@ public class MapPage {
 	 * This method with switch to cities frame
 	 */
 	public void switchToCitiesFrame(){
+		Context.global().getSeleniumUtils().scrollinElement(frameCities);
 		driver.switchTo().frame(frameCities);
 	}
 	
@@ -62,6 +66,7 @@ public class MapPage {
 	 * Click maximise when info in pin is displayed
 	 */
 	public void clickMaximise(){
+		
 		Context.global().getSeleniumUtils().clickOnElement(maximise);
 	}
 	
@@ -69,7 +74,7 @@ public class MapPage {
 	 * Click close when info is read
 	 */
 	public void clickClose(){
-		Context.global().getSeleniumUtils().clickOnElement(close);
+		Context.global().getSeleniumUtils().moveToELEandClick(close);
 	}
 	
 	/**
@@ -117,6 +122,9 @@ public class MapPage {
 	 * @return
 	 */
 	public int noOfPins(){
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector
+				  ("#milwaukee_7663_layer > image:nth-child(2)")));
 		return pins.size();
 	}
 

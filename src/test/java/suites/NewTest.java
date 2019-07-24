@@ -13,11 +13,10 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 
 public class NewTest {
@@ -41,7 +40,8 @@ public class NewTest {
 	
 	  Context.global().getSeleniumUtils().navigatetoURL
 	  ("https://www.bizjournals.com/milwaukee/feature/crane-watch");
-	  
+	  JavascriptExecutor jse = (JavascriptExecutor)driver;
+	  jse.executeScript("window.scrollBy(0,250)");
 	  homePage.clickViewMap();
 	  Context.global().getSeleniumUtils().waitForLoad(Context.global().getSeleniumUtils().getDriver());
 	  mapPage.switchToCitiesFrame();
@@ -53,30 +53,32 @@ public class NewTest {
   
   public void storePinInfoinMap(){
 	  MapPage mapPage =  PageFactory.initElements(this.driver, MapPage.class);
+	  JavascriptExecutor jse = (JavascriptExecutor)driver;
+	  jse.executeScript("window.scrollBy(0,500)");
+	  this.driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
 	  int pinNO = mapPage.noOfPins();
-	  Context.global().getSeleniumUtils().getDriver().manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
 	  for(int i = 2;i<= pinNO+1;i++){
-		  WebDriverWait wait = new WebDriverWait(Context.global().getSeleniumUtils().getDriver(),10);
-		  
-		  WebElement e = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector
-				  ("#milwaukee_7663_layer > image:nth-child("+i+")")));
-		  Context.global().getSeleniumUtils().scrollinElement(e);
-		  e.click();
-		  mapPage.clickMaximise();
+		 try{
+		  WebElement ele = driver.findElement(By.cssSelector
+				  ("#milwaukee_7663_layer > image:nth-child("+i+")"));
+		  Context.global().getSeleniumUtils().moveToELEandClick(ele);
 		  LinkedList<String> pinData = new LinkedList<String>();
 		  String heading = mapPage.fetchPinHeader();
 		  int dataLines = Context.global().getSeleniumUtils().getDriver().
 				  findElements(By.xpath("//*[contains(@id,'esri_dijit__PopupRenderer')]//following::tr")).size();
 		  for(int j = 1;j<=dataLines;j++){
-			 
 			  String val = Context.global().getSeleniumUtils().getDriver().
 					  findElement(By.xpath("(//*[contains(@id,'esri_dijit__PopupRenderer')]//following::tr)["+j+"]/td[2]")).getText();
-			
 			  pinData.add(val);
 		  }
 		  completeData.put(heading, pinData);
 		  mapPage.clickClose();
 	  }
+		 catch(Exception e){
+			  continue;
+		  }
+	  }
+	  
   }
   
   @BeforeMethod
@@ -87,8 +89,8 @@ public class NewTest {
 
   @AfterMethod
   public void afterMethod() {
-	  Context.global().getSeleniumUtils().getDriver().quit();
-	  Context.global().getSeleniumUtils().getDriver().close();
+	  //this.driver.quit();
+	  this.driver.close();
   }
 
 }

@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,7 +19,8 @@ public class SeleniumUtils {
 	 * 
 	 */
 	public void setDriver(){
-		System.setProperty("webdriver.chrome.driver","A:\\Study\\LatestNew_WS\\briqautomationmaven\\src\\main\\resources\\chromedriver.exe");
+		String path = System.getProperty("user.dir");
+		System.setProperty("webdriver.chrome.driver",path+"\\src\\main\\resources\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-popup-blocking");
 		driver = new ChromeDriver(options);
@@ -87,6 +89,15 @@ public class SeleniumUtils {
 	 */
 	public void navigatetoURL(String url){
 		Context.global().getSeleniumUtils().getDriver().navigate().to(url);
+	}
+	
+	public void scroll(){
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("window.scrollBy(0,500)");
+	}
+	public void moveToELEandClick(WebElement e){
+		  Actions actions = new Actions(driver);
+		  actions.moveToElement(e).click().build().perform();
 	}
 
 }

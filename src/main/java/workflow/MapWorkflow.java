@@ -14,8 +14,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class MapWorkflow {
 	
 	public void putDataInExcel(LinkedHashMap<String, LinkedList<String>> completeData) throws IOException{
-		
-		FileInputStream file = new FileInputStream("A:\\Study\\BriqExcel.xlsx");
+		String path = System.getProperty("user.dir");
+		FileInputStream file = new FileInputStream(path+"\\BriqExcel.xlsx");
 		@SuppressWarnings("resource")
 		XSSFWorkbook wb = new XSSFWorkbook(file);
 		Sheet sheet = wb.getSheetAt(0);
